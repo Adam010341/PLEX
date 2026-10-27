@@ -309,8 +309,10 @@ class Builder {
   }
 
   void ComputeCHTStatistics(std::vector<Statistics>& statistics) {
-    // Compute the necessary amount of bits we need.
-    const unsigned lg = ComputeLog(max_key_ - min_key_, true);
+    // Compute the necessary amount of bits we need, i.e. the number of bits of
+    // `max_key_ - min_key_` itself. Rounding up the logarithm is one bit short
+    // when the range is a power of two (then `lcp` below underflows).
+    const unsigned lg = ComputeLog(max_key_ - min_key_) + 1;
     const unsigned alreadyCommon = (sizeof(KeyType) << 3) - lg;
 
     // Compute the longest common prefix.
